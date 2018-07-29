@@ -1,4 +1,5 @@
 import CartParser from './CartParser';
+import { readFileSync } from 'fs';
 
 let parser;
 
@@ -172,7 +173,7 @@ describe("CartParser - unit tests", () => {
 
     test("parse should return a JSON object if no validate errors", () => {   // 11
 
-        let pathToCorrectTestCart = "./samples/correctTestingCart.csv";
+        let pathToCorrectTestCart = "./samples/cart.csv";
 
         let resultOfParsing = parser.parse(pathToCorrectTestCart);
 
@@ -180,7 +181,7 @@ describe("CartParser - unit tests", () => {
         expect(resultOfParsing.items[0].name).toBe("Mollis consequat");
         expect(resultOfParsing.items[0].price).toBe(9);
         expect(resultOfParsing.items[0].quantity).toBe(2);
-        expect(resultOfParsing.total).toBe(18);
+        expect(resultOfParsing.total).toBe(348.32);
 
         expect(typeof resultOfParsing).toBe("object");
 
@@ -191,7 +192,29 @@ describe("CartParser - unit tests", () => {
 
 describe("CartParser - integration tests", () => {
     // Add your integration tests here.
-    
-    
+
+    test("check how to an object relations with methods", () => {   // 1
+        
+        const path = "./samples/cart.csv";
+
+        const sourceFile = readFileSync(path, 'utf-8', 'r');  // Зчитуємо файл напряму
+
+        const validateErrors = (new CartParser()).validate(sourceFile);  // Очікуємо пустий масив помилок
+
+        const lines = sourceFile.split(/\n/).filter(l => l).filter((l, i) => i > 0);
+
+        const items = lines.map(l => (new CartParser()).parseLine(l));   // Очікуємо сам масив об'єктів з проперті id, name, price, quantity;
+
+        const totalPrice = (new CartParser()).calcTotal(items);  // Очікуємо суму всіх товарів 348.32
+        
+        expect(validateErrors).toEqual([]);
+        
+        expect(items[1].name).toBe("Tvoluptatem");
+        expect(items[1].price).toBe(10.32);
+        expect(items[1].quantity).toBe(1);
+
+        expect(totalPrice).toBeCloseTo(348.32);
+
+    });
 
 });
