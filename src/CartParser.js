@@ -137,6 +137,7 @@ class CartParser {
                     }
                     case this.ColumnType.NUMBER_POSITIVE: {
                         const cellAsNumber = Number(cell);
+
                         if (
                             typeof(cellAsNumber) != 'number' || 
                             Number.isNaN(cellAsNumber) || 
@@ -167,7 +168,9 @@ class CartParser {
      * 
      * @returns an object with keys from column keys and values from CSV.
      */
-    parseLine(csvLine) {
+
+    parseLine(csvLine) {   
+
         const
             columns = this.schema.columns,
             types = columns.map(column => column.type),
