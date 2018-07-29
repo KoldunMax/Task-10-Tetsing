@@ -129,13 +129,19 @@ describe("CartParser - unit tests", () => {
                  
     });
 
-    test("parseLine should return an object with keys from column keys and values from CSV", () => {   // 8
+    test("validate should not return not errors if csvLine is correct", () => {     // 8
+
+        let validCoundOfCells = "Product name,Price,Quantity\nMollis consequat,9.00,2";   
+
+        expect(parser.validate(validCoundOfCells)).toEqual([]);
+
+    });
+
+    test("parseLine should return an object with keys from column keys and values from CSV", () => {   // 9
 
         let csvLine = "Mollis consequat,9.00,2";
 
         let item = parser.parseLine(csvLine);
-
-        console.log(item);
 
         expect(item.name).toBe("Mollis consequat");
         expect(item.price).toBe(9);
@@ -144,13 +150,37 @@ describe("CartParser - unit tests", () => {
 
     });
 
-    
+    test("calcTotal should return total price when take several objects", () => {       // 10
+        let pathToCorrectTestCart = "./samples/cart.csv";
+
+        let exampleItems = 
+        [ { 
+            name: 'Mollis consequat',
+            price: 9,
+            quantity: 2 },
+          { 
+            name: 'Tvoluptatem',
+            price: 10.32,
+            quantity: 1,
+        } ];
+
+        let totalPrice = parser.calcTotal(exampleItems);
+
+        expect(totalPrice).toBeCloseTo(28.32);
+
+    });
 
     test("parse should return a JSON object if no validate errors", () => {   // 11
 
         let pathToCorrectTestCart = "./samples/correctTestingCart.csv";
 
         let resultOfParsing = parser.parse(pathToCorrectTestCart);
+
+        expect(!!resultOfParsing.items[0].id).toBe(true);
+        expect(resultOfParsing.items[0].name).toBe("Mollis consequat");
+        expect(resultOfParsing.items[0].price).toBe(9);
+        expect(resultOfParsing.items[0].quantity).toBe(2);
+        expect(resultOfParsing.total).toBe(18);
 
         expect(typeof resultOfParsing).toBe("object");
 
@@ -162,4 +192,6 @@ describe("CartParser - unit tests", () => {
 describe("CartParser - integration tests", () => {
     // Add your integration tests here.
     
+    
+
 });

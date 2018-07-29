@@ -85,6 +85,7 @@ class CartParser {
      * @returns an array of validation errors. If the array is empty, validation is successful.
      */
     validate(contents) {
+        
         const 
             errors = [],
             lines = contents.split(/\n/).filter(l => l),
@@ -201,6 +202,7 @@ class CartParser {
      * @returns {number} total price.
      */
     calcTotal(cartItems) {
+        console.log(cartItems)
         return cartItems.reduce(
             (acc, cur) => acc + cur.price * cur.quantity,
             0
